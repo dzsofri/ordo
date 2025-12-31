@@ -1,0 +1,168 @@
+### =====================================
+### GLOBÁLIS VÁLTOZÓK
+### =====================================
+
+@baseUrl = https://localhost:3000/users
+@email = beretizsofia310@gmail.com
+@password = Csalamde123!
+@newPassword = Titkosjelszo1234!
+@userId = c0d4199d-e63e-11f0-9028-f8bc12a3784b
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwZDQxOTlkLWU2M2UtMTFmMC05MDI4LWY4YmMxMmEzNzg0YiIsImVtYWlsIjoiYmVyZXRpenNvZmlhMzEwQGdtYWlsLmNvbSIsIm5hbWUiOiJCZXLDqXRpIFpTw7NmaWEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjcxODU4MjQsImV4cCI6MTc2NzI3MjIyNH0.ZIm4m6ebk40iu8d0E4PtkE8yGi3ZFIMCDlGY2_cz0IU
+### =====================================
+### 1️⃣ LOGIN – EMAIL + JELSZÓ (2FA INDÍTÁS)
+### =====================================
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### VÁRT:
+### {
+###   "twoFactorRequired": true,
+###   "userId": 1
+### }
+
+
+### =====================================
+### 2️⃣ LOGIN – HIBÁS JELSZÓ
+### =====================================
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "rosszjelszo"
+}
+
+
+### =====================================
+### 3️⃣ LOGIN – HIÁNYZÓ MEZŐK
+### =====================================
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+
+### =====================================
+### 4️⃣ 2FA ELLENŐRZÉS – HELYES KÓD
+### (EMAILBŐL KIMÁSOLT OTP!)
+### =====================================
+
+POST {{baseUrl}}/verify-2fa
+Content-Type: application/json
+
+{
+  "userId": "c0d4199d-e63e-11f0-9028-f8bc12a3784b",
+  "code": "138851"
+}
+
+### VÁRT:
+### {
+###   "token": "JWT_TOKEN"
+### }
+
+
+### =====================================
+### 5️⃣ 2FA – HIBÁS KÓD
+### =====================================
+
+POST {{baseUrl}}/verify-2fa
+Content-Type: application/json
+
+{
+  "userId": "c0d4199d-e63e-11f0-9028-f8bc12a3784b",
+  "code": "000000"
+}
+
+
+### =====================================
+### 6️⃣ FELHASZNÁLÓK LEKÉRÉSE (TOKENNEL)
+### =====================================
+
+GET {{baseUrl}}/
+Authorization: Bearer {{token}}
+
+
+### =====================================
+### 7️⃣ FELHASZNÁLÓ LEKÉRÉSE ID ALAPJÁN
+### =====================================
+
+GET {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{token}}
+
+
+### =====================================
+### 8️⃣ FELHASZNÁLÓ FRISSÍTÉSE (PATCH – SAJÁT)
+### =====================================
+
+PATCH {{baseUrl}}/{{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+   "currentPassword": "UjJelszo123!",
+    "newPassword": "Csalamde123!!"
+}
+
+
+### =====================================
+### 9️⃣ FELHASZNÁLÓ SZEREPKÖR MÓDOSÍTÁS (ADMIN)
+### =====================================
+
+PATCH  {{baseUrl}}/{{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role": "HELPDESK"
+}
+
+
+### =====================================
+### 🔟 JELSZÓ VISSZAÁLLÍTÁS – EMAIL KÉRÉS
+### =====================================
+
+POST {{baseUrl}}/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+
+### =====================================
+### 1️⃣1️⃣ JELSZÓ VISSZAÁLLÍTÁS – TOKENNEL
+### =====================================
+
+POST {{baseUrl}}/reset-password
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "token": "c99524b18b33e83ddba6b98a9a923a5bf7b1011336dbfceeca2d2691daea60a7",
+  "newPassword": "Csalamde123!"
+}
+
+
+### =====================================
+### 1️⃣2️⃣ FELHASZNÁLÓ TÖRLÉSE (SAJÁT VAGY ADMIN)
+### =====================================
+
+DELETE {{baseUrl}}/{{userId}}
+Authorization: Bearer {{token}}
+
+
+### =====================================
+### 1️⃣3️⃣ JOGOSULATLAN KÉRÉS – TOKEN NÉLKÜL
+### =====================================
+
+GET {{baseUrl}}/

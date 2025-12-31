@@ -1,0 +1,14 @@
+[
+  {
+    "keywords": ["login", "password"],
+    "answer": "Próbáld a jelszó visszaállítást az 'Elfelejtett jelszó' menüpontban."
+  },
+  {
+    "keywords": ["event", "create"],
+    "answer": "Új eseményt a 'Create Event' gombbal hozhatsz létre."
+  },
+  {
+    "keywords": ["helpdesk", "contact"],
+    "answer": "A helpdesk elérhető a chat felületen vagy a support@example.com e-mail címen."
+  }
+]
