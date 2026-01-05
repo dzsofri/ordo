@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Password Reset - Ordo</title>
+<title>Account Recovery - Ordo</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -43,7 +43,7 @@
     }
     .button {
         display: inline-block;
-        padding: 12px 28px;
+        padding: 24px 56px;
         background: linear-gradient(90deg, #21209C, #8A18A0);
         color: #ffffff !important;
         text-decoration: none;
@@ -51,9 +51,22 @@
         font-weight: bold;
         font-size: 16px;
     }
-    .button:hover {
-        opacity: 0.9;
-    }
+   
+/* Magas, keskeny, nagy térközű karakterek az OTP-hez */
+.button.otp {
+    font-family: "Arial Narrow", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: 10px;        /* nagy térköz */
+    line-height: 1;             /* kompakt sor */
+    padding: 18px 36px;         /* nagyobb gombméret */
+    border-radius: 8px;
+    display: inline-block;
+    transform: scaleY(1.12);    /* magasabb megjelenés */
+    -webkit-transform: scaleY(1.12);
+    -webkit-font-smoothing: antialiased;
+}
+
     .corner-decoration {
         width: 100%;
         height: 50px;
@@ -81,17 +94,16 @@
             <div class="logo">ORDO</div>
             <div class="tagline">Control Time. Protect Data.</div>
             
-            <h2>Password Reset Request</h2>
+           <h2>Two-Step Verification Code</h2>
             <p>Hello <strong><%= user.name %></strong>,</p>
-            <p>We received a request to reset the password for your <strong>Ordo</strong> account. If you did not request this, please ignore this email.</p>
-            <p>To reset your password, click the button below:</p>
+            <p>We detected a login attempt to your <strong>Ordo</strong> account. To complete signing in, please use the code below:</p>
             <p style="text-align: center;">
-                <a href="<%= resetUrl %>" class="button">Reset Password</a>
+                <span class="button otp" style="cursor: default;"><strong><%= otp %></strong></span>
             </p>
-            <p>Your <strong>Reset Token:</strong> <strong><%= resetToken %></strong></p>
-            <p>This link will expire in <strong>1 hour</strong>.</p>
-            <p>If you have any questions or issues, please contact our <strong>support team</strong>.</p>
+            <p>This code will expire in <strong>10 minutes</strong>.</p>
+            <p>If you did not attempt to sign in, please secure your account immediately and contact our <strong>support team</strong>.</p>
             <p>Best regards,<br><strong>The Ordo Team</strong></p>
+        
         </div>
     </center>
 </body>

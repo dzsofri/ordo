@@ -44,16 +44,28 @@ router.post("/login", async (req, res) => {
 
     if (!email) invalidFields.push("email");
     if (!password) invalidFields.push("password");
-    if (invalidFields.length) return res.status(400).json({ message: "Missing fields!", invalid: invalidFields });
+    if (invalidFields.length) {
+        return res.status(400).json({ message: "Missing fields!", invalid: invalidFields });
+    }
 
     try {
-        const user = await AppDataSource.getRepository(Users).findOne({ where: { email } });
-        if (!user) return res.status(400).json({ message: "Invalid credentials!" });
+        const user = await AppDataSource
+            .getRepository(Users)
+            .createQueryBuilder("user")
+            .addSelect("user.password")
+            .where("user.email = :email", { email })
+            .getOne();
+
+        if (!user) {
+            return res.status(400).json({ message: "Invalid credentials!" });
+        }
 
         const valid = await bcrypt.compare(password, user.password);
-        if (!valid) return res.status(400).json({ message: "Invalid credentials!" });
+        if (!valid) {
+            return res.status(400).json({ message: "Invalid credentials!" });
+        }
 
-        // Generáljuk a 2FA kódot
+        // 2FA
         const otp = generateOTP();
         user.twoFactorCode = await bcrypt.hash(otp, 10);
         user.twoFactorExpires = new Date(Date.now() + 5 * 60 * 1000);
@@ -61,13 +73,17 @@ router.post("/login", async (req, res) => {
         await AppDataSource.getRepository(Users).save(user);
 
         await transporter.sendMail({
-            from: `"TrackIt" <${process.env.SMTP_USER}>`,
+            from: `"Ordo" <${process.env.SMTP_USER}>`,
             to: user.email,
             subject: "Your verification code",
-            html: `<h3>Your verification code</h3><p><b>${otp}</b></p><p>Valid for 5 minutes.</p>`
+          html: await ejs.renderFile(path.join(__dirname, '../../views/2fa.ejs'), { otp, user }),
         });
 
-        res.status(200).json({ message: "Verification code sent to email", twoFactorRequired: true, userId: user.id });
+        res.status(200).json({
+            message: "Verification code sent to email",
+            twoFactorRequired: true,
+            userId: user.id
+        });
     } catch (error) {
         console.error("POST /login error:", error);
         res.status(500).json({ message: "Error during login." });
@@ -139,42 +155,91 @@ router.get('/users/:id', tokencheck, async (req:any, res:any) => {
 });
 
 // PATCH /:id → Update User Data (partial) with password change
-router.patch('/:id', tokencheck, async (req:any, res:any) => {
+router.patch('/:id', tokencheck, async (req: any, res: any) => {
     const userId = req.params.id;
+    const requestingUserId = req.user.id;
+    const isAdmin = req.user.role === "ADMIN";
+
     const { name, email, role, currentPassword, newPassword } = req.body;
 
+    // Csak saját magát vagy admin módosíthat
+    if (userId !== requestingUserId && !isAdmin) {
+        return res.status(403).json({ error: "Unauthorized" });
+    }
+
     try {
-        const user = await AppDataSource.getRepository(Users).findOne({ where: { id: userId } });
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        // ⚠️ password miatt QueryBuilder kell
+        const user = await AppDataSource
+            .getRepository(Users)
+            .createQueryBuilder("user")
+            .addSelect("user.password")
+            .where("user.id = :id", { id: userId })
+            .getOne();
 
-        // Frissítjük a nevet
-        if (name) user.name = name;
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-        // Frissítjük az e-mailt
+        // Name update
+        if (name) {
+            user.name = name;
+        }
+
+        // Email update
         if (email) {
-            const emailConflict = await AppDataSource.getRepository(Users).findOne({ where: { email, id: Not(userId) } });
-            if (emailConflict) return res.status(400).json({ message: 'Email already exists', invalid: ['email'] });
+            const emailConflict = await AppDataSource
+                .getRepository(Users)
+                .findOne({ where: { email, id: Not(userId) } });
+
+            if (emailConflict) {
+                return res.status(400).json({
+                    message: "Email already exists",
+                    invalid: ["email"],
+                });
+            }
+
             user.email = email;
         }
 
-        // Csak admin módosíthatja a szerepkört
-        if (role && req.user.role === "ADMIN") {
-            if (!["ADMIN", "USER", "HELPDESK"].includes(role)) {
-                return res.status(400).json({ message: "Invalid role", invalid: ['role'] });
+        // Role update – ONLY ADMIN
+        if (role) {
+            if (!isAdmin) {
+                return res.status(403).json({ error: "Only admin can change role" });
             }
+
+            if (!["ADMIN", "USER", "HELPDESK"].includes(role)) {
+                return res.status(400).json({
+                    message: "Invalid role",
+                    invalid: ["role"],
+                });
+            }
+
             user.role = role;
         }
 
-        // Jelszó frissítés
+        // Password change
         if (newPassword) {
-            if (!currentPassword) return res.status(400).json({ message: "Current password required", invalid: ['currentPassword'] });
+            if (!currentPassword) {
+                return res.status(400).json({
+                    message: "Current password required",
+                    invalid: ["currentPassword"],
+                });
+            }
 
-            // Ellenőrizzük a jelenlegi jelszót
             const isValid = await bcrypt.compare(currentPassword, user.password);
-            if (!isValid) return res.status(400).json({ message: "Current password is incorrect", invalid: ['currentPassword'] });
+            if (!isValid) {
+                return res.status(400).json({
+                    message: "Current password is incorrect",
+                    invalid: ["currentPassword"],
+                });
+            }
 
-            // Új jelszó ellenőrzése
-            if (!validatePassword(newPassword)) return res.status(400).json({ message: "New password does not meet requirements", invalid: ['newPassword'] });
+            if (!validatePassword(newPassword)) {
+                return res.status(400).json({
+                    message: "New password does not meet requirements",
+                    invalid: ["newPassword"],
+                });
+            }
 
             user.password = await bcrypt.hash(newPassword, 10);
         }
@@ -182,21 +247,19 @@ router.patch('/:id', tokencheck, async (req:any, res:any) => {
         await AppDataSource.getRepository(Users).save(user);
 
         res.status(200).json({
-            message: 'User updated successfully',
+            message: "User updated successfully",
             user: {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                role: user.role
-            }
+                role: user.role,
+            },
         });
     } catch (error) {
         console.error("PATCH /:id error:", error);
         res.status(500).json({ message: "Error updating user" });
     }
 });
-
-
 
 // DELETE /:id → Delete User
 router.delete('/:id', tokencheck, async (req:any, res:any) => {
@@ -248,31 +311,6 @@ router.post("/forgot-password", async (req, res) => {
         res.status(500).json({ message: "Error sending email" });
     }
 });
-
-// POST /reset-password
-router.post("/reset-password", async (req, res) => {
-    const { email, token, newPassword } = req.body;
-    if (!newPassword || newPassword.trim() === '') return res.status(400).json({ message: "Password required" });
-
-    try {
-        const user = await AppDataSource.getRepository(Users).findOne({ where: { email } });
-        if (!user || !user.resetPasswordToken || !user.resetPasswordExpires) return res.status(400).json({ message: "Invalid or expired token" });
-
-        const isTokenValid = await bcrypt.compare(token, user.resetPasswordToken);
-        if (!isTokenValid || user.resetPasswordExpires < new Date()) return res.status(400).json({ message: "Invalid or expired token" });
-
-        user.password = await bcrypt.hash(newPassword, 10);
-        user.resetPasswordToken = null;
-        user.resetPasswordExpires = null;
-
-        await AppDataSource.getRepository(Users).save(user);
-        res.status(200).json({ message: "Password updated successfully" });
-    } catch (error) {
-        console.error("POST /reset-password error:", error);
-        res.status(500).json({ message: "Error resetting password" });
-    }
-});
-
 
 
 export default router;

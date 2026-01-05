@@ -1,0 +1,68 @@
+### =========================
+### CONFIG
+### =========================
+@baseUrl = https://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwZDQxOTlkLWU2M2UtMTFmMC05MDI4LWY4YmMxMmEzNzg0YiIsImVtYWlsIjoiYmVyZXRpenNvZmlhMzEwQGdtYWlsLmNvbSIsIm5hbWUiOiJCZXLDqXRpIFpTw7NmaWEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjcyNzI0NDgsImV4cCI6MTc2NzM1ODg0OH0.3a_57AyFOOI89KKQJBbONgHAhv5ATd8YhuohIWP8-SM
+@eventId = bfec2a44-9eb1-492f-ad4e-234afb590bd4
+
+
+### =========================
+### CREATE EVENT
+### POST /events
+### =========================
+POST {{baseUrl}}/events
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Meetinggggg",
+  "occurrence": "2026-01-10T14:00:00.000Z",
+  "description": "Project meeting with team"
+}
+
+
+### =========================
+### GET LOGGED-IN USER EVENTS
+### GET /events
+### =========================
+GET {{baseUrl}}/events
+Authorization: Bearer {{token}}
+
+
+### =========================
+### GET EVENT BY ID
+### GET /events/:id
+### =========================
+GET {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{token}}
+
+
+### =========================
+### UPDATE EVENT
+### PUT /events/:id
+### =========================
+PUT {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Updated Meeting",
+  "occurrence": "2026-01-10T16:00:00.000Z",
+  "description": "Updated description"
+}
+
+
+### =========================
+### DELETE EVENT
+### DELETE /events/:id
+### =========================
+DELETE {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{token}}
+
+
+### =========================
+### GET ALL EVENTS (ADMIN)
+### GET /events/all
+### =========================
+GET {{baseUrl}}/events/all
+Authorization: Bearer {{token}}

@@ -3,9 +3,21 @@ import { Events } from "../entities/Event";
 import { Users } from "../entities/User";
 import { tokencheck } from "../utiles/tokenUtils";
 import { isAdmin } from "../utiles/roleUtils";
-import { AppDataSource } from "../datasource"; 
+import { AppDataSource } from "../datasource";
 
 const router = Router();
+
+/**
+ * Event → Response DTO
+ */
+const toEventResponse = (event: Events) => ({
+    id: event.id,
+    title: event.title,
+    occurrence: event.occurrence,
+    description: event.description,
+    createdAt: event.createdAt,
+    updatedAt: event.updatedAt,
+});
 
 // POST /events → Create Event
 router.post("/", tokencheck, async (req: any, res) => {
@@ -16,7 +28,7 @@ router.post("/", tokencheck, async (req: any, res) => {
             message: "Missing fields!",
             invalid: [
                 !title && "title",
-                !occurrence && "occurrence"
+                !occurrence && "occurrence",
             ].filter(Boolean),
         });
     }
@@ -26,7 +38,9 @@ router.post("/", tokencheck, async (req: any, res) => {
         const userRepo = AppDataSource.getRepository(Users);
 
         const user = await userRepo.findOneBy({ id: req.user.id });
-        if (!user) return res.status(404).json({ error: "User not found." });
+        if (!user) {
+            return res.status(404).json({ error: "User not found." });
+        }
 
         const event = eventRepo.create({
             title,
@@ -36,20 +50,41 @@ router.post("/", tokencheck, async (req: any, res) => {
         });
 
         await eventRepo.save(event);
-        res.status(201).json({ message: "Event created.", event });
-    } catch (err) {
+
+        res.status(201).json({
+            message: "Event created.",
+            event: toEventResponse(event),
+        });
+    } catch {
         res.status(500).json({ error: "Error creating event." });
     }
 });
 
 // GET /events/all → Get All Events (Admin)
-router.get("/all", tokencheck, isAdmin, async (req: any, res) => {
+router.get("/all", tokencheck, isAdmin, async (_req, res) => {
     try {
         const events = await AppDataSource.getRepository(Events).find({
             relations: ["user"],
+            select: {
+                id: true,
+                title: true,
+                occurrence: true,
+                description: true,
+                createdAt: true,
+                updatedAt: true,
+                user: {
+                    id: true,
+                },
+            },
         });
-        res.json({ events });
-    } catch (err) {
+
+        res.json({
+            events: events.map(e => ({
+                ...toEventResponse(e),
+                userId: e.user.id,
+            })),
+        });
+    } catch {
         res.status(500).json({ error: "Error fetching events." });
     }
 });
@@ -60,8 +95,11 @@ router.get("/", tokencheck, async (req: any, res) => {
         const events = await AppDataSource.getRepository(Events).find({
             where: { user: { id: req.user.id } },
         });
-        res.json({ events });
-    } catch (err) {
+
+        res.json({
+            events: events.map(toEventResponse),
+        });
+    } catch {
         res.status(500).json({ error: "Error fetching events." });
     }
 });
@@ -76,9 +114,14 @@ router.get("/:id", tokencheck, async (req: any, res) => {
             },
         });
 
-        if (!event) return res.status(404).json({ error: "Event not found." });
-        res.json({ event });
-    } catch (err) {
+        if (!event) {
+            return res.status(404).json({ error: "Event not found." });
+        }
+
+        res.json({
+            event: toEventResponse(event),
+        });
+    } catch {
         res.status(500).json({ error: "Error fetching event." });
     }
 });
@@ -97,15 +140,21 @@ router.put("/:id", tokencheck, async (req: any, res) => {
             },
         });
 
-        if (!event) return res.status(404).json({ error: "Event not found." });
+        if (!event) {
+            return res.status(404).json({ error: "Event not found." });
+        }
 
         if (title !== undefined) event.title = title;
         if (occurrence !== undefined) event.occurrence = new Date(occurrence);
         if (description !== undefined) event.description = description;
 
         await repo.save(event);
-        res.json({ message: "Event updated.", event });
-    } catch (err) {
+
+        res.json({
+            message: "Event updated.",
+            event: toEventResponse(event),
+        });
+    } catch {
         res.status(500).json({ error: "Error updating event." });
     }
 });
@@ -122,11 +171,14 @@ router.delete("/:id", tokencheck, async (req: any, res) => {
             },
         });
 
-        if (!event) return res.status(404).json({ error: "Event not found." });
+        if (!event) {
+            return res.status(404).json({ error: "Event not found." });
+        }
 
         await repo.remove(event);
+
         res.json({ message: "Event deleted." });
-    } catch (err) {
+    } catch {
         res.status(500).json({ error: "Error deleting event." });
     }
 });

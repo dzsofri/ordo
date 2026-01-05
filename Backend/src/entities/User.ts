@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm";
-import { Chat } from "./Chat";
+import { Ticket } from "./Ticket";
 import { Events } from "./Event";
+import { TicketMessage } from "./TicketMessages";
 
 export enum UserRole {
   ADMIN = "ADMIN",
@@ -24,7 +25,7 @@ export class Users {
   @Column({ type: "varchar", length: 255, unique: true })
   email: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 255, select: false })
   password: string;
 
   @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
@@ -45,16 +46,19 @@ export class Users {
   @OneToMany(() => Events, (event) => event.user, { onDelete: "CASCADE" })
   events: Events[];
 
-  @OneToMany(() => Chat, (chat) => chat.sender, { onDelete: "CASCADE" })
-  sentMessages: Chat[];
-
-  @OneToMany(() => Chat, (chat) => chat.receiver, { onDelete: "CASCADE" })
-  receivedMessages: Chat[];
-
   @Column({ nullable: true })
   twoFactorCode: string | null;
 
   @Column({ nullable: true })
   twoFactorExpires: Date | null;
+
+    @OneToMany(() => Ticket, (ticket) => ticket.owner)
+  ticketsOwned: Ticket[];
+
+  @OneToMany(() => Ticket, (ticket) => ticket.assignedTo)
+  ticketsAssigned: Ticket[];
+
+  @OneToMany(() => TicketMessage, (message) => message.sender)
+  messages: TicketMessage[];
 
 }

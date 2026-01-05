@@ -1,14 +1,90 @@
 [
   {
-    "keywords": ["login", "password"],
-    "answer": "Próbáld a jelszó visszaállítást az 'Elfelejtett jelszó' menüpontban."
+    "keywords": ["login", "password", "signin", "credentials"],
+    "answer": "If you cannot log in, try the 'Forgot Password' option to reset your password."
   },
   {
-    "keywords": ["event", "create"],
-    "answer": "Új eseményt a 'Create Event' gombbal hozhatsz létre."
+    "keywords": ["account", "locked", "suspended"],
+    "answer": "If your account is locked or suspended, please contact the support team via chat or support@example.com."
   },
   {
-    "keywords": ["helpdesk", "contact"],
-    "answer": "A helpdesk elérhető a chat felületen vagy a support@example.com e-mail címen."
+    "keywords": ["event", "create", "new", "add"],
+    "answer": "You can create a new event by clicking the 'Create Event' button on your dashboard."
+  },
+  {
+    "keywords": ["event", "update", "edit", "modify"],
+    "answer": "To update an event, go to your event list, select the event, and edit its description or details."
+  },
+  {
+    "keywords": ["event", "delete", "remove", "cancel"],
+    "answer": "To delete an event, select the event from your list and click the 'Delete' button. Confirm the action to remove it permanently."
+  },
+  {
+    "keywords": ["list", "events", "show", "display"],
+    "answer": "You can view all your events by navigating to the 'My Events' page, where all upcoming and past events are listed."
+  },
+  {
+    "keywords": ["multi-user", "users", "account", "participants"],
+    "answer": "The system supports multiple users. Each user can manage their own events, and permissions are applied to keep events private."
+  },
+  {
+    "keywords": ["password", "reset", "forgot"],
+    "answer": "If you forgot your password, use the 'Reset Password' link on the login page to receive an email and create a new password."
+  },
+  {
+    "keywords": ["security", "login", "mfa", "2fa"],
+    "answer": "For enhanced security, enable Multi-Factor Authentication (MFA) on your account. You will receive a code via email or authenticator app each time you log in."
+  },
+  {
+    "keywords": ["api", "backend", "endpoint", "access"],
+    "answer": "All backend API endpoints require proper authentication (JWT or OAuth 2.0) and are accessible only over HTTPS."
+  },
+  {
+    "keywords": ["helpdesk", "support", "contact", "agent", "human"],
+    "answer": "You can reach our helpdesk through the chat interface or email support@example.com. If your question cannot be handled automatically, it will be escalated to a human agent."
+  },
+  {
+    "keywords": ["chat", "bot", "faq", "assistant"],
+    "answer": "The system features an AI-powered FAQ bot that can answer common questions about account management, events, and system functionality."
+  },
+  {
+    "keywords": ["voice", "phone", "call", "web voice"],
+    "answer": "You can also contact support via voice using the integrated web voice interface or by calling our support line."
+  },
+  {
+    "keywords": ["event", "details", "description", "info"],
+    "answer": "Event descriptions can be added or updated to provide more context for attendees. Use the 'Edit' button to update the information."
+  },
+  {
+    "keywords": ["notifications", "alerts", "reminders"],
+    "answer": "You can enable notifications for your events to receive reminders via email or in-app messages."
+  },
+  {
+    "keywords": ["unauthorized", "access", "forbidden"],
+    "answer": "Access to protected resources is only allowed for authenticated users. Please log in and ensure your account has proper permissions."
+  },
+  {
+    "keywords": ["tls", "encryption", "secure", "https"],
+    "answer": "All communications between the frontend and backend are encrypted using TLS. Unencrypted connections are not allowed."
+  },
+  {
+    "keywords": ["owasp", "security risks", "cyberattack", "protection"],
+    "answer": "The system is designed with security in mind and mitigates common risks including those listed in OWASP Top 10."
+  },
+  {
+    "keywords": ["report", "bug", "issue", "problem"],
+    "answer": "If you encounter a bug or technical problem, please report it via the support chat or email support@example.com."
+  },
+  {
+    "keywords": ["account", "profile", "settings", "update"],
+    "answer": "You can update your account details and profile information by navigating to the 'Settings' page."
+  },
+  {
+    "keywords": ["calendar", "schedule", "view", "events"],
+    "answer": "The system provides a calendar view to visualize your events. Use it to plan and track your schedule efficiently."
+  },
+  {
+    "keywords": ["permissions", "access", "role"],
+    "answer": "Helpdesk agents have a specific role that allows them to access the admin chat interface and respond to user messages."
   }
 ]

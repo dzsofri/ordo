@@ -7,7 +7,7 @@
 @password = Csalamde123!
 @newPassword = Titkosjelszo1234!
 @userId = c0d4199d-e63e-11f0-9028-f8bc12a3784b
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwZDQxOTlkLWU2M2UtMTFmMC05MDI4LWY4YmMxMmEzNzg0YiIsImVtYWlsIjoiYmVyZXRpenNvZmlhMzEwQGdtYWlsLmNvbSIsIm5hbWUiOiJCZXLDqXRpIFpTw7NmaWEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjcxODU4MjQsImV4cCI6MTc2NzI3MjIyNH0.ZIm4m6ebk40iu8d0E4PtkE8yGi3ZFIMCDlGY2_cz0IU
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwZDQxOTlkLWU2M2UtMTFmMC05MDI4LWY4YmMxMmEzNzg0YiIsImVtYWlsIjoiYmVyZXRpenNvZmlhMzEwQGdtYWlsLmNvbSIsIm5hbWUiOiJCZXLDqXRpIFpTw7NmaWEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjcyNzMzNzUsImV4cCI6MTc2NzM1OTc3NX0.3skr1ypf4Wg5ank39GXnjsrPtS3RoCWx_VcmdWyb3Sk
 ### =====================================
 ### 1️⃣ LOGIN – EMAIL + JELSZÓ (2FA INDÍTÁS)
 ### =====================================
@@ -62,7 +62,7 @@ Content-Type: application/json
 
 {
   "userId": "c0d4199d-e63e-11f0-9028-f8bc12a3784b",
-  "code": "138851"
+  "code": "485786"
 }
 
 ### VÁRT:

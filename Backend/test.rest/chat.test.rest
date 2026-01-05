@@ -1,0 +1,28 @@
+### Üzenet küldése /messages végpontra (új ticket létrehozás)
+POST https://localhost:3000/tickets/messages
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwZDQxOTlkLWU2M2UtMTFmMC05MDI4LWY4YmMxMmEzNzg0YiIsImVtYWlsIjoiYmVyZXRpenNvZmlhMzEwQGdtYWlsLmNvbSIsIm5hbWUiOiJCZXLDqXRpIFpTw7NmaWEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjcyODE0NTEsImV4cCI6MTc2NzM2Nzg1MX0.hRF-d14POaCFtQqaqvH8n2eApLNo5yp17vxp1IR4cM8
+
+{
+  "content": "I cannot log in to my account"
+}
+
+### Üzenet küldése meglévő tickethez (ticketId megadva)
+POST https://localhost:3000/tickets/messages
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwZDQxOTlkLWU2M2UtMTFmMC05MDI4LWY4YmMxMmEzNzg0YiIsImVtYWlsIjoiYmVyZXRpenNvZmlhMzEwQGdtYWlsLmNvbSIsIm5hbWUiOiJCZXLDqXRpIFpTw7NmaWEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjcyODE0NTEsImV4cCI6MTc2NzM2Nzg1MX0.hRF-d14POaCFtQqaqvH8n2eApLNo5yp17vxp1IR4cM8
+
+{
+  "ticketId": "04271fe6-5915-4ff3-992c-df532879f188",
+  "content": "My problem is still not solved"
+}
+
+### Hibás kérés példa (üres content)
+POST https://localhost:3000/tickets/messages
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwZDQxOTlkLWU2M2UtMTFmMC05MDI4LWY4YmMxMmEzNzg0YiIsImVtYWlsIjoiYmVyZXRpenNvZmlhMzEwQGdtYWlsLmNvbSIsIm5hbWUiOiJCZXLDqXRpIFpTw7NmaWEiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjcyODE0NTEsImV4cCI6MTc2NzM2Nzg1MX0.hRF-d14POaCFtQqaqvH8n2eApLNo5yp17vxp1IR4cM8
+
+{
+  "ticketId": "04271fe6-5915-4ff3-992c-df532879f188",
+  "content": ""
+}
