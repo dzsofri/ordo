@@ -1,0 +1,158 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  max-width: 100vw !important;
+  height: 100vh;
+  background-color: black;
+}
+
+.events {
+  width: 100%;
+  align-content: start; 
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+
+  .event {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.02)
+    );
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+
+    color: #fff;
+    border-left: 5px solid #8a18a0;
+    border-radius: 18px;
+    padding: 1.1rem;
+    min-height: 120px;
+
+    box-shadow:
+      0 8px 30px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    display: flex;
+    flex-direction: column;
+ 
+
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      background 0.25s ease;
+
+    /* ✨ folyékony fényréteg */
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at top left,
+        rgba(138, 24, 160, 0.25),
+        transparent 60%
+      );
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    &:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .event-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      margin-bottom: 0.3rem;
+    }
+    .datetime{
+        display: flex;
+        flex-direction: row;
+      align-items: space-between;
+      gap: 1rem;
+      padding: 0.5rem 0  0.5rem 0;
+
+    }
+
+      .event-time .event-date {
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      margin-bottom: 0.3rem;
+    }
+
+    .event-desc {
+      font-size: 0.85rem;
+      opacity: 0.75 ;
+      line-height: 1.4;
+      flex: 1;
+      text-align: justify;
+    }
+
+    .event-actions {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+
+  display: flex;
+  gap: 0.4rem;
+  z-index: 2;
+
+  button {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    color: #fff;
+    font-size: 0.9rem;
+
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+
+    opacity: 0.6;
+    transition: all 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+  }
+
+  .edit:hover {
+    background: rgba(0, 200, 255, 0.25);
+  }
+
+  .delete:hover {
+    background: rgba(255, 60, 60, 0.35);
+  }
+}
+
+   
+  }
+}
+
+@media (max-width: 900px) {
+  .events {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
+  .events {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,1 +1,28 @@
-<p>twofa works!</p>
+<div class="container-fluid">
+  <div class="welcome-wrapper" id="heroimage">
+    
+    <div class="card" id="registration-form">
+      <h2 class="text-center mb-2">Enter Your Code</h2>
+      <p class="text-center">Please enter your 6-digit login code.</p>
+
+      <form (ngSubmit)="onSubmit()" #registrationForm="ngForm" class="code-form">
+
+        <div class="code-boxes mb-3">
+          <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" name="code1" [(ngModel)]="code[0]" (input)="moveFocus($event,1)">
+          <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" name="code2" [(ngModel)]="code[1]" (input)="moveFocus($event,2)">
+          <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" name="code3" [(ngModel)]="code[2]" (input)="moveFocus($event,3)">
+          <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" name="code4" [(ngModel)]="code[3]" (input)="moveFocus($event,4)">
+          <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" name="code5" [(ngModel)]="code[4]" (input)="moveFocus($event,5)">
+          <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" name="code6" [(ngModel)]="code[5]" (input)="moveFocus($event,6)">
+        </div>
+
+        <div class="text-end mb-3">
+          <a href="#" class="forgot-password">Resend code?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Log In</button>
+      </form>
+    </div>
+
+  </div>
+</div>

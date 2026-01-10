@@ -1,0 +1,99 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  position: relative;
+  width: 360px;
+  max-width: 90vw;
+  padding: 2rem;
+  border-radius: 22px;
+  text-align: center;
+  color: #f5f5f5;
+
+  background: linear-gradient(
+    135deg,
+    rgba(182, 181, 181, 0.55),
+    rgba(230, 230, 255, 0.35)
+  );
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 28px 60px rgba(0,0,0,0.3),
+    inset 0 1px 1px rgba(255,255,255,0.5);
+
+  transform: translateY(-30px) scale(0.95);
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.modal-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,0.45), transparent 45%),
+    radial-gradient(circle at 80% 85%, rgba(138,24,160,0.18), transparent 50%);
+  pointer-events: none;
+  background-size: 200% 200%;
+  animation: liquidLight 12s ease-in-out infinite;
+}
+
+.modal-content::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 18px rgba(255,255,255,0.22),
+    0 0 28px rgba(138,24,160,0.12);
+  pointer-events: none;
+}
+
+.modal-title {
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.modal-message {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.modal-buttons .btn {
+  min-width: 80px;
+}
+
+@keyframes liquidLight {
+  0% { background-position: 0% 0%, 100% 100%; }
+  50% { background-position: 100% 30%, 0% 70%; }
+  100% { background-position: 0% 0%, 100% 100%; }
+}

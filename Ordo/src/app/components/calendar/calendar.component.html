@@ -1,0 +1,29 @@
+<div class="container">
+<div class="calendar-wrapper">
+  <div class="calendar-header">
+    <button class="btn btn-primary" (click)="prevMonth()">&#8592;</button>
+    <h3>{{ year }} - {{ month + 1 }}</h3>
+    <button class="btn btn-primary" (click)="nextMonth()">&#8594;</button>
+  </div>
+
+  <div class="calendar-grid">
+    <!-- napok neve -->
+    <div class="day-name" *ngFor="let dayName of dayNames">{{ dayName }}</div>
+
+    <!-- üres cellák a hónap elején -->
+    <div class="empty-cell" *ngFor="let _ of [].constructor(firstDay)"></div>
+
+    <!-- napok -->
+    <div class="day-cell" *ngFor="let day of [].constructor(daysInMonth); let i = index">
+      <div class="day-number">{{ i + 1 }}</div>
+
+      <div class="events">
+        <div class="event" *ngFor="let e of eventsForDay(i + 1)" [style.border-left-color]="e.color || '#8a18a0'">
+          <div class="event-title">{{ e.title }}</div>
+          <div class="event-time">{{ e.time }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

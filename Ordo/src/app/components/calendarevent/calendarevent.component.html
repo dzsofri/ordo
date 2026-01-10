@@ -1,0 +1,62 @@
+<div class="container">
+    <div class="events">
+        <div class="event" [style.border-left-color]="'#8a18a0'">
+
+            <div class="event-actions">
+                <button class="edit" title="Szerkesztés">
+                <i class="bi bi-pencil"></i>
+                </button>
+                <button class="delete" title="Törlés">
+                <i class="bi bi-trash"></i>
+                </button>
+            </div>
+
+            <div class="event-title">{{ dummyEvent.title }}</div>
+
+            <div class="datetime">
+                <div class="event-date">
+                <i class="bi bi-calendar"></i> {{ dummyEvent.date }}
+                </div>
+                <div class="event-time">
+                <i class="bi bi-clock"></i> {{ dummyEvent.time }}
+                </div>
+            </div>
+
+            <div class="event-desc">
+                {{ dummyEvent.description | slice:0:150 }}
+                <span *ngIf="dummyEvent.description.length > 150">…</span>
+            </div>
+
+        </div>
+
+      <div class="event" [style.border-left-color]="'#8a18a0'">
+
+            <div class="event-actions">
+                <button class="edit" title="Szerkesztés">
+                <i class="bi bi-pencil"></i>
+                </button>
+                <button class="delete" title="Törlés">
+                <i class="bi bi-trash"></i>
+                </button>
+            </div>
+
+            <div class="event-title">{{ dummyEvent.title }}</div>
+
+            <div class="datetime">
+                <div class="event-date">
+                <i class="bi bi-calendar"></i> {{ dummyEvent.date }}
+                </div>
+                <div class="event-time">
+                <i class="bi bi-clock"></i> {{ dummyEvent.time }}
+                </div>
+            </div>
+
+            <div class="event-desc">
+                {{ dummyEvent.description | slice:0:150 }}
+                <span *ngIf="dummyEvent.description.length > 150">…</span>
+            </div>
+
+        </div>
+
+  </div>
+</div>

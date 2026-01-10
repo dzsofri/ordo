@@ -1,27 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { User } from '../../interfaces/user';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ModalComponent } from '../modal/modal.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [FormsModule, CommonModule, RouterModule, ModalComponent],
 })
 export class LoginComponent {
 
-   isPasswordVisible = false;
-  user: User = { email: '', password: '' };
+  @ViewChild('modal') modal!: ModalComponent;
 
-  // Modal változók
-  modalVisible = false;
+  user: User = { email: '', password: '' };
+  showPassword = false;
+  invalidFields: string[] = [];
+
+  // Modal állapotok
   modalType: 'success' | 'error' | 'warning' | 'info' = 'info';
   modalMessage = '';
-  invalidFields: string[] = [];
 
   constructor(
     private api: ApiService,
@@ -30,55 +33,58 @@ export class LoginComponent {
   ) {}
 
   togglePasswordVisibility() {
-    this.isPasswordVisible = !this.isPasswordVisible;
+    this.showPassword = !this.showPassword;
   }
 
- 
-updateUserStatus(newStatus: string): void {
-  this.api.updateStatus(newStatus).subscribe(response => {
-    if (response.message === 'Státusz sikeresen frissítve.') {
-      console.log('Státusz sikeresen frissítve');
-    } else {
-      console.error('Hiba történt a státusz frissítésekor', response.message);
-    }
-  });
-}
+  // Form submit
+  onSubmit() {
+    this.invalidFields = [];
 
+    this.api.login(this.user.email, this.user.password).subscribe({
+      next: (res: any) => {
+        this.invalidFields = res.invalid || [];
 
- onSubmit() {
-  this.invalidFields = []; // Reset the invalid fields
+        if (this.invalidFields.length === 0) {
+          if (res.token) {
+            this.auth.login(res.token);
 
-  this.api.login(this.user.email, this.user.password).subscribe({
-    next: (res: any) => {
-      this.invalidFields = res.invalid || [];
-
-      if (this.invalidFields.length === 0) {
-        if (res.token) {
-          this.auth.login(res.token);
-
-          // Böngésző alert a sikerhez
-          alert(res.message || 'Login successful!');
-
-          this.updateUserStatus("online");
-
-          this.router.navigateByUrl('/landing');
+            // Sikeres login modal
+            this.modalType = 'success';
+            this.modalMessage = res.message || 'Login successful!';
+            this.modal.open();
+          } else {
+            // Token nélkül hiba modal
+            this.modalType = 'error';
+            this.modalMessage = res.message || 'Login failed!';
+            this.modal.open();
+          }
         } else {
-          // Ha nincs token, hiba
-          alert(res.message || 'Login failed!');
+          // Hibás mezők modal 
+          this.modalType = 'warning';
+          this.modalMessage = 'Invalid login fields: ' + this.invalidFields.join(', ');
+          this.modal.open();
         }
-      } else {
-        // Hibás mezők
-        alert('Invalid login fields: ' + this.invalidFields.join(', '));
+      },
+      error: (err) => {
+        this.modalType = 'error';
+        this.modalMessage = err.error?.message || 'Unknown error occurred!';
+        this.modal.open();
       }
-    },
-    error: (err) => {
-      alert(err.error?.message || 'Unknown error occurred!');
+    });
+  }
+
+  // Modal confirm
+  onConfirm() {
+    this.modal.close();
+    if (this.modalType === 'success') {
+      // Sikeres login után navigálás
+      this.router.navigateByUrl('/twofa');
     }
-  });
-}
+  }
 
-
-  isInvalid(field: string) {
-    return this.invalidFields.includes(field); // Visszaadja, hogy a mező hibás-e
+  // Modal cancel
+  onCancel() {
+    this.modal.close();
+    console.log('User cancelled modal');
   }
 }

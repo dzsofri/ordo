@@ -1,0 +1,43 @@
+<button (click)="openModal()">Open Modal</button>
+
+<!-- Modal -->
+<div *ngIf="showModal" class="overlay" (click)="closeModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>Event Details</h2>
+      <button class="close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="modal-content">
+      <div class="tag">
+        <span class="dot"></span>
+        {{ event.type }}
+      </div>
+
+      <div class="section">
+        <label>Event Name</label>
+        <div class="value">{{ event.title }}</div>
+      </div>
+
+      <div class="section">
+        <label>Description</label>
+        <p class="description">{{ event.description }}</p>
+      </div>
+
+      <div class="section">
+        <label>Deadline</label>
+        <div class="value">{{ event.deadline }}</div>
+      </div>
+
+      <div class="section">
+        <label>Link</label>
+        <a class="link" [href]="event.link" target="_blank">
+          <i class="bi bi-link-45deg"></i> {{ event.link }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
